@@ -133,7 +133,7 @@ minetest.register_on_joinplayer(function(player)
 					minetest.formspec_escape("Press escape or the back button. " ..
 					"Select 'change password'.\n" ..
 					"When done, type /rules.\n" ..
-					"You will not be able to obtain interact until you get this."))
+					"You will not be able to obtain interact until you get this.") .. "]")
 	elseif can_grant_interact(player) then
 		rules.show(player)
 	end
