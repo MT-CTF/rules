@@ -75,9 +75,9 @@ function rules.show(player)
 	if not has_password(pname) then
 		fs = fs .. "box[4,6.5;3.1,0.7;#900]"
 		fs = fs .. "label[4.2,6.6;Please set a password]"
-		fs = fs .. "button_exit[0.5,6;3.5,2;yes;Okay]"
+		fs = fs .. "button_exit[0.5,6;3.5,2;ok;Okay]"
 	elseif not can_grant_interact(player) then
-		fs = fs .. "button_exit[0.5,6;7,2;yes;Okay]"
+		fs = fs .. "button_exit[0.5,6;7,2;ok;Okay]"
 	else
 		local yes = minetest.formspec_escape("Yes, let me play!")
 		local no = minetest.formspec_escape("No, get me out of here!")
@@ -145,7 +145,7 @@ minetest.register_on_player_receive_fields(function(player, form, fields)
 	end
 
 	local name = player:get_player_name()
-	if not can_grant_interact(player) then
+	if not can_grant_interact(player) or not has_password(name) then
 		return true
 	end
 
