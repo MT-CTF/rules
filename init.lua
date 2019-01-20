@@ -6,8 +6,6 @@ rules = {}
 
 
 local items = {
-	"Welcome to Capture the Flag!",
-	"",
 	"By playing on this server you agree to these rules:",
 	"",
 	"1. No swearing, dating, or other inappriopriate behaviour...",
@@ -22,7 +20,8 @@ local items = {
 	"    b. Help the other team win.",
 	"    c. Change teams.",
 	"6. Don't impersonate other community members",
-	"7. Moderator decisions are final.",
+	"7. Do not share your password with ANYONE.",
+	"8. Moderator decisions are final.",
 	"",
 	"Failure to follow these rules may result in a kick or ban",
 	"     (temp or permanent) depending on severity.",
@@ -32,7 +31,7 @@ local items = {
 	"            Gael-de-Sailly, Shara, Calinou",
 	"",
 	"Though the server owner will not actively read private messages or disclose",
-	"their content outside the mod team, random checks will be done to make sure", 
+	"their content outside the mod team, random checks will be done to make sure",
 	"they are not being abused and they will be reviewed if abuse or inappropriate",
 	"behaviour is suspected. ",
 	"",
@@ -59,23 +58,34 @@ local function can_grant_interact(player)
 	return not minetest.check_player_privs(name, { interact = true }) and not minetest.check_player_privs(name, { fly = true })
 end
 
+local function has_password(pname)
+	local handler = minetest.get_auth_handler()
+	local auth = handler.get_auth(pname)
+	return auth and not minetest.check_password_entry(pname, auth.password, "")
+end
+
 function rules.show(player)
-	local fs = "size[8,7]bgcolor[#080808BB;true]" ..
+	local pname = player:get_player_name()
+	local fs = "size[8,8.6]bgcolor[#080808BB;true]" ..
 			default.gui_bg ..
 			default.gui_bg_img ..
-			"textlist[0.1,0.1;7.8,6.3;msg;" .. rules.txt .. ";-1;true]"
+			"textlist[0.1,0.1;7.8,7.9;msg;" .. rules.txt .. ";-1;true]"
 
-	if not can_grant_interact(player) then
-		fs = fs .. "button_exit[0.5,6;7,2;yes;Okay]"
+	if not has_password(pname) then
+		fs = fs .. "box[4,8.1;3.1,0.7;#900]"
+		fs = fs .. "label[4.2,8.2;Please set a password]"
+		fs = fs .. "button_exit[0.5,7.6;3.5,2;ok;Okay]"
+	elseif not can_grant_interact(player) then
+		fs = fs .. "button_exit[0.5,7.6;7,2;ok;Okay]"
 	else
 		local yes = minetest.formspec_escape("Yes, let me play!")
 		local no = minetest.formspec_escape("No, get me out of here!")
 
-		fs = fs .. "button_exit[0.5,6;3.5,2;no;" .. no .. "]"
-		fs = fs .. "button_exit[4,6;3.5,2;yes;" .. yes .. "]"
+		fs = fs .. "button_exit[0.5,7.6;3.5,2;no;" .. no .. "]"
+		fs = fs .. "button_exit[4,7.6;3.5,2;yes;" .. yes .. "]"
 	end
 
-	minetest.show_formspec(player:get_player_name(), "rules:rules", fs)
+	minetest.show_formspec(pname, "rules:rules", fs)
 end
 
 minetest.register_chatcommand("rules", {
@@ -96,13 +106,34 @@ minetest.register_chatcommand("rules", {
 })
 
 minetest.register_on_joinplayer(function(player)
-	local privs = minetest.get_player_privs(player:get_player_name())
+	local pname = player:get_player_name()
+
+	local privs = minetest.get_player_privs(pname)
 	if privs.interact and privs.fly then
 		privs.interact = false
 		minetest.set_player_privs(player:get_player_name(), privs)
 	end
 
-	if can_grant_interact(player) then
+	if not has_password(pname) then
+		local privs = minetest.get_player_privs(pname)
+		privs.shout = false
+		privs.interact = false
+		privs.kick = false
+		privs.ban = false
+		minetest.set_player_privs(pname, privs)
+
+		minetest.show_formspec(pname, "rules:pwd", [[
+				size[8,3]
+				no_prepends[]
+				bgcolor[#600]
+				label[0.2,0.2;Please set a password]
+				button_exit[0.5,2;7,2;yes;Okay]
+				textarea[0.2,1;7.9,2;;;]] ..
+					minetest.formspec_escape("Press escape or the back button. " ..
+					"Select 'change password'.\n" ..
+					"When done, type /rules.\n" ..
+					"You will not be able to obtain interact until you get this.") .. "]")
+	elseif can_grant_interact(player) then
 		rules.show(player)
 	end
 end)
@@ -113,7 +144,7 @@ minetest.register_on_player_receive_fields(function(player, form, fields)
 	end
 
 	local name = player:get_player_name()
-	if not can_grant_interact(player) then
+	if not can_grant_interact(player) or not has_password(name) then
 		return true
 	end
 
@@ -135,4 +166,3 @@ minetest.register_on_player_receive_fields(function(player, form, fields)
 
 	return true
 end)
-
