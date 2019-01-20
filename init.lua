@@ -20,7 +20,7 @@ local items = {
 	"    b. Help the other team win.",
 	"    c. Change teams.",
 	"5. Don't impersonate other community members.",
-	"6. Do not share your password with ANYONE.",
+	"6. Don't share your password with anyone.",
 	"7. Moderator decisions are final.",
 	"",
 	"Failure to follow these rules may result in a kick or ban",
