@@ -28,7 +28,7 @@ local items = {
 	"",
 	"Developed and hosted by rubenwardy",
 	"Moderators: Thomas-S, ANAND, IceAgeComing, Waterbug, DragonGirl,",
-	"            Gael-de-Sailly, Shara, Calinou",
+	"            Gael-de-Sailly, Shara, Calinou, Aurika, Lone_Wolf, Xenon",
 	"",
 	"Though the server owner will not actively read private messages or disclose",
 	"their content outside the mod team, random checks will be done to make sure",
