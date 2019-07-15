@@ -8,7 +8,7 @@ rules = {}
 local items = {
 	"By playing on this server you agree to these rules:",
 	"",
-	"1. No swearing, dating, or other inappriopriate behaviour...",
+	"1. No swearing, dating, or other inappriopriate behaviour.",
 	"2. No spamming, using all-caps, or any other method of chat abuse.",
 	"3. Don't be a cheater. No hacked clients.",
 	"4. Don't excessively spawnkill. Some spawn killing to stop players chasing",
