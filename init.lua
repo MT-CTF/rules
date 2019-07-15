@@ -27,8 +27,8 @@ local items = {
 	"     (temp or permanent) depending on severity.",
 	"",
 	"Developed and hosted by rubenwardy",
-	"Moderators: Thomas-S, ANAND, IceAgeComing, Waterbug, DragonGirl,",
-	"            Gael-de-Sailly, Shara, Calinou",
+	"Moderators: Thomas-S, ANAND, IceAgeComing, Waterbug, DragonsVolcanoDance,",
+	"            Gael-de-Sailly, Shara, Calinou, Aurika, Lone_Wolf, Xenon",
 	"",
 	"Though the server owner will not actively read private messages or disclose",
 	"their content outside the mod team, random checks will be done to make sure",
@@ -54,8 +54,9 @@ if minetest.global_exists("sfinv") then
 end
 
 local function can_grant_interact(player)
-	local name = player:get_player_name()
-	return not minetest.check_player_privs(name, { interact = true }) and not minetest.check_player_privs(name, { fly = true })
+	local pname = player:get_player_name()
+	return not minetest.check_player_privs(pname, { interact = true }) and
+			not minetest.check_player_privs(pname, { fly = true })
 end
 
 local function has_password(pname)
@@ -88,19 +89,31 @@ function rules.show(player)
 	minetest.show_formspec(pname, "rules:rules", fs)
 end
 
+function rules.show_pwd(pname, msg)
+	msg = msg or "You must set a password to be able to play"
+
+	minetest.show_formspec(pname, "rules:pwd",  [[
+			size[8,3]
+			no_prepends[]
+			bgcolor[#600]
+			pwdfield[0.8,1.5;7,1;pwd;Password;]
+			button[0.5,2;7,2;setpwd;Set]
+			label[0.2,0.2;]] .. minetest.formspec_escape(msg) .. "]")
+end
+
 minetest.register_chatcommand("rules", {
-	func = function(name, param)
+	func = function(pname, param)
 		if param ~= "" and
-				minetest.check_player_privs(name, { kick = true }) then
-			name = param
+				minetest.check_player_privs(pname, { kick = true }) then
+			pname = param
 		end
 
-		local player = minetest.get_player_by_name(name)
+		local player = minetest.get_player_by_name(pname)
 		if player then
 			rules.show(player)
 			return true, "Rules shown."
 		else
-			return false, "Player " .. name .. " does not exist or is not online"
+			return false, "Player " .. pname .. " does not exist or is not online"
 		end
 	end
 })
@@ -111,58 +124,67 @@ minetest.register_on_joinplayer(function(player)
 	local privs = minetest.get_player_privs(pname)
 	if privs.interact and privs.fly then
 		privs.interact = false
-		minetest.set_player_privs(player:get_player_name(), privs)
+		minetest.set_player_privs(pname, privs)
 	end
 
 	if not has_password(pname) then
-		local privs = minetest.get_player_privs(pname)
 		privs.shout = false
 		privs.interact = false
 		privs.kick = false
 		privs.ban = false
 		minetest.set_player_privs(pname, privs)
-
-		minetest.show_formspec(pname, "rules:pwd", [[
-				size[8,3]
-				no_prepends[]
-				bgcolor[#600]
-				label[0.2,0.2;Please set a password]
-				button_exit[0.5,2;7,2;yes;Okay]
-				textarea[0.2,1;7.9,2;;;]] ..
-					minetest.formspec_escape("Press escape or the back button. " ..
-					"Select 'change password'.\n" ..
-					"When done, type /rules.\n" ..
-					"You will not be able to obtain interact until you get this.") .. "]")
+		rules.show_pwd(pname)
 	elseif can_grant_interact(player) then
 		rules.show(player)
 	end
 end)
 
 minetest.register_on_player_receive_fields(function(player, form, fields)
+	if form == "rules:pwd" then
+		local pname = player:get_player_name()
+		if fields.setpwd then
+			local handler = minetest.get_auth_handler()
+			if not fields.pwd or fields.pwd:trim() == "" then
+				rules.show_pwd(pname)
+			elseif #fields.pwd < 5 then
+				rules.show_pwd(pname, "Needs at least 5 characters")
+			else
+				handler.set_password(pname,
+						minetest.get_password_hash(pname, fields.pwd))
+				rules.show(player)
+			end
+		else
+			minetest.kick_player(pname,
+				"You need to set a password to play on this server.")
+		end
+
+		return true
+	end
+
 	if form ~= "rules:rules" then
 		return
 	end
 
-	local name = player:get_player_name()
-	if not can_grant_interact(player) or not has_password(name) then
+	local pname = player:get_player_name()
+	if not can_grant_interact(player) or not has_password(pname) then
 		return true
 	end
 
 	if fields.msg then
 		return true
 	elseif not fields.yes or fields.no then
-		minetest.kick_player(name,
+		minetest.kick_player(pname,
 			"You need to agree to the rules to play on this server. " ..
 			"Please rejoin and confirm another time.")
 		return true
 	end
 
-	local privs = minetest.get_player_privs(name)
+	local privs = minetest.get_player_privs(pname)
 	privs.shout = true
 	privs.interact = true
-	minetest.set_player_privs(name, privs)
+	minetest.set_player_privs(pname, privs)
 
-	minetest.chat_send_player(name, "Welcome "..name.."! You have now permission to play!")
+	minetest.chat_send_player(pname, "Welcome "..pname.."! You have now permission to play!")
 
 	return true
 end)
