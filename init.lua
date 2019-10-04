@@ -19,7 +19,7 @@ local items = {
 	"       to trap team mates on purpose.",
 	"    b. Help the other team win.",
 	"    c. Change teams.",
-	"6. Don't combat-log, that is, leaving the game whilst in a fight",
+	"6. Don't leave the game whilst in a fight",
 	"7. Don't impersonate other community members",
 	"8. Do not share your password with ANYONE.",
 	"9. Moderator decisions are final.",
