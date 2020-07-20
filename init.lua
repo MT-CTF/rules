@@ -98,7 +98,7 @@ function rules.show_pwd(pname, msg)
 			size[8,3]
 			no_prepends[]
 			bgcolor[#600]
-			pwdfield[0.8,1.5;7,1;pwd;Password;]
+			pwdfield[0.8,1.5;7,1;pwd;Password]
 			button[0.5,2;7,2;setpwd;Set]
 			label[0.2,0.2;]] .. minetest.formspec_escape(msg) .. "]")
 end
