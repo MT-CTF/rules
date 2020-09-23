@@ -70,8 +70,6 @@ end
 function rules.show(player)
 	local pname = player:get_player_name()
 	local fs = "size[8,8.6]bgcolor[#080808BB;true]" ..
-			default.gui_bg ..
-			default.gui_bg_img ..
 			"textlist[0.1,0.1;7.8,7.9;msg;" .. rules.txt .. ";-1;true]"
 
 	if not has_password(pname) then
