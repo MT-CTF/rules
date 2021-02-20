@@ -28,9 +28,9 @@ local items = {
 	S("Failure to follow these rules may result in a kick or ban"),
 	S("     (temp or permanent) depending on severity."),
 	"",
-	S("Developed and hosted by rubenwardy"),
-	S("Moderators: Thomas-S, ANAND, IceAgeComing, Waterbug, DragonsVolcanoDance,"),
-	S("            Gael-de-Sailly, Shara, Calinou, Aurika, Lone_Wolf, Xenon"),
+	S("Developed and hosted by rubenwardy",
+	S("Moderators: Thomas-S, IceAgeComing, Waterbug, DragonsVolcanoDance,"),
+	S("            Shara, Calinou, Aurika, Lone_Wolf, Xenon, Jhalman, Kat"),
 	"",
 	S("Though the server owner will not actively read private messages or disclose"),
 	S("their content outside the mod team, random checks will be done to make sure"),
@@ -70,8 +70,6 @@ end
 function rules.show(player)
 	local pname = player:get_player_name()
 	local fs = "size[8,8.6]bgcolor[#080808BB;true]" ..
-			default.gui_bg ..
-			default.gui_bg_img ..
 			"textlist[0.1,0.1;7.8,7.9;msg;" .. rules.txt .. ";-1;true]"
 
 	if not has_password(pname) then
