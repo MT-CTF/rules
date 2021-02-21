@@ -118,7 +118,7 @@ minetest.register_chatcommand("rules", {
 	end
 })
 
-minetest.register_on_joinplayer(function(player)
+minetest.register_on_newplayer(function(player)
 	local pname = player:get_player_name()
 
 	local privs = minetest.get_player_privs(pname)
