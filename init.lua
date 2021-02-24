@@ -8,7 +8,7 @@ local S = minetest.get_translator(minetest.get_current_modname())
 local items = {
 	S("By playing on this server you agree to these rules:"),
 	"",
-	S("1. No swearing, dating, or other inappriopriate behaviour."),
+	S("1. No swearing, dating, or other inappropriate behaviour."),
 	S("2. No spamming, using all-caps, or any other method of chat abuse."),
 	S("3. Don't be a cheater. No hacked clients."),
 	S("4. Don't excessively spawnkill. Some spawn killing to stop players chasing"),
