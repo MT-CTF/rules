@@ -1,3 +1,10 @@
 # Rules
 
-Thanks to @Panquesito7 for spanish translation
+Rules mod for the official CTF server.  
+
+## Translations
+Spanish: Panquesito7  
+French: Kat  
+German: xenonca  
+Dutch: Kat  
+Itlaian: xenonca  
