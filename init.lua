@@ -38,7 +38,7 @@ local items = {
 	S("Though the server owner will not actively read private messages or disclose"),
 	S("their content outside the mod team, random checks will be done to make sure"),
 	S("they are not being abused and they will be reviewed if abuse or inappropriate"),
-	S("behaviour is suspected. "),
+	S("behaviour is suspected."),
 	"",
 	S("Use /report to send a message to a moderator."),
 	S("For example, /report bobgreen is destroying our base")}
