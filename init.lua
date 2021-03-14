@@ -16,7 +16,7 @@ local items = {
 --	S("        the same players definitely isn't."),
 	S("4. Spawnkilling is considered excessive and thus forbidden if it doesn't"),
 	S("        contribute to the goal of the game in a proper way. Consequently,"),
-	S("        spawnkilling can already be punished if only two kills are made"),
+	S("        spawnkilling can already be punished if only two kills are made,"),
 	S("        depending on the situation."),
 	S("5. Don't be a traitor. Don't:"),
 	S("    a. Dig blocks in your base to make it less secure or"),
