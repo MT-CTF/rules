@@ -194,7 +194,7 @@ local timer = 0
 minetest.register_globalstep(function(dtime)
 	timer = timer + dtime;
 	if timer >= 180 then
-		-- Send "Minetest" to all players every 5 seconds
+		-- Send "Minetest" to all players every 3 minutes
 		minetest.chat_send_all(minetest.colorize("#808080", "Use /rules command to see the server rules."))
 		timer = 0
 	end
