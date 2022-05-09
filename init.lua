@@ -26,7 +26,7 @@ local items = {
 	S("Failure to follow these rules may result in a kick or ban"),
 	S("     (temp or permanent) depending on severity."),
 	"",
-	S("Hosted by LandarVargan"),
+	S("Created by rubenwardy. Developed by ")..S("LandarVargan and savilli."),
 	S("Moderators")..": Thomas-S, IceAgeComing, Waterbug, DragonsVolcanoDance,",
 	"            Shara, Calinou, Aurika, LandarVargan, Xenon, Jhalman, Kat",
 	"",
