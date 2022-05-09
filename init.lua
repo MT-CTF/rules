@@ -53,16 +53,9 @@ if minetest.global_exists("sfinv") then
 	})
 end
 
-local function can_grant_interact(player)
-	local pname = player:get_player_name()
+local function need_to_accept(pname)
 	return not minetest.check_player_privs(pname, { interact = true }) and
-			not minetest.check_player_privs(pname, { fly = true })
-end
-
-local function has_password(pname)
-	local handler = minetest.get_auth_handler()
-	local auth = handler.get_auth(pname)
-	return auth and not minetest.check_password_entry(pname, auth.password, "")
+			not minetest.check_player_privs(pname, { shout = true })
 end
 
 function rules.show(player)
@@ -70,11 +63,7 @@ function rules.show(player)
 	local fs = "size[8,8.6]bgcolor[#080808BB;true]" ..
 			"textlist[0.1,0.1;7.8,7.9;msg;" .. rules.txt .. ";-1;true]"
 
-	if not has_password(pname) then
-		fs = fs .. "box[4,8.1;3.1,0.7;#900]"
-		fs = fs .. "label[4.2,8.2;Please set a password]"
-		fs = fs .. "button_exit[0.5,7.6;3.5,2;ok;Okay]"
-	elseif not can_grant_interact(player) then
+	if not need_to_accept(pname) then
 		fs = fs .. "button_exit[0.5,7.6;7,2;ok;Okay]"
 	else
 		local yes = minetest.formspec_escape("Yes, let me play!")
@@ -85,18 +74,6 @@ function rules.show(player)
 	end
 
 	minetest.show_formspec(pname, "rules:rules", fs)
-end
-
-function rules.show_pwd(pname, msg)
-	msg = msg or "You must set a password to be able to play"
-
-	minetest.show_formspec(pname, "rules:pwd",  [[
-			size[8,3]
-			no_prepends[]
-			bgcolor[#600]
-			pwdfield[0.8,1.5;7,1;pwd;Password]
-			button[0.5,2;7,2;setpwd;Set]
-			label[0.2,0.2;]] .. minetest.formspec_escape(msg) .. "]")
 end
 
 minetest.register_chatcommand("rules", {
@@ -120,60 +97,35 @@ minetest.register_on_newplayer(function(player)
 	local pname = player:get_player_name()
 
 	local privs = minetest.get_player_privs(pname)
-	if privs.interact and privs.fly then
-		privs.interact = false
-		minetest.set_player_privs(pname, privs)
-	end
+	privs.shout = nil
+	privs.interact = nil
+	minetest.set_player_privs(pname, privs)
 
-	if not has_password(pname) then
-		privs.shout = false
-		privs.interact = false
-		privs.kick = false
-		privs.ban = false
-		minetest.set_player_privs(pname, privs)
-		rules.show_pwd(pname)
-	elseif can_grant_interact(player) then
+	rules.show(player)
+end)
+
+minetest.register_on_joinplayer(function(player)
+	if need_to_accept(player:get_player_name()) then
 		rules.show(player)
 	end
 end)
 
 minetest.register_on_player_receive_fields(function(player, form, fields)
-	if form == "rules:pwd" then
-		local pname = player:get_player_name()
-		if fields.setpwd then
-			local handler = minetest.get_auth_handler()
-			if not fields.pwd or fields.pwd:trim() == "" then
-				rules.show_pwd(pname)
-			elseif #fields.pwd < 5 then
-				rules.show_pwd(pname, "Needs at least 5 characters")
-			else
-				handler.set_password(pname,
-						minetest.get_password_hash(pname, fields.pwd))
-				rules.show(player)
-			end
-		else
-			minetest.kick_player(pname,
-				"You need to set a password to play on this server.")
-		end
-
-		return true
-	end
-
-	if form ~= "rules:rules" then
-		return
-	end
+	if form ~= "rules:rules" then return end
 
 	local pname = player:get_player_name()
-	if not can_grant_interact(player) or not has_password(pname) then
+	if not need_to_accept(pname) then
 		return true
 	end
 
-	if fields.msg then
-		return true
-	elseif not fields.yes or fields.no then
+	if fields.no then
 		minetest.kick_player(pname,
 			"You need to agree to the rules to play on this server. " ..
 			"Please rejoin and confirm another time.")
+		return true
+	end
+
+	if not fields.yes then
 		return true
 	end
 
