@@ -7,4 +7,4 @@ Spanish: Panquesito7
 French: Kat  
 German: xenonca  
 Dutch: Kat  
-Itlaian: xenonca  
+Italian: xenonca  
