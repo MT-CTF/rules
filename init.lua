@@ -29,7 +29,7 @@ local items = {
 	"",
 	S("Created by rubenwardy. Developed by ")..S("LandarVargan and savilli."),
 	S("Moderators")..": Thomas-S, IceAgeComing, Waterbug, DragonsVolcanoDance,",
-	"            Shara, Calinou, Aurika, LandarVargan, Xenon, Jhalman, Kat, _Lucy",
+	"            Shara, Calinou, Aurika, LandarVargan, Xenon, Jhalman,",
 	"            Kat, _Lucy",
 	"",
 	S("Though the server owner will not actively read private messages or"),
