@@ -44,12 +44,40 @@ for i = 1, #items do
 end
 rules.txt = table.concat(items, ",")
 
+local colors = {
+	background_color = "#FFF0",
+	font_color = "#FFF",
+	heading_1_color = "#AFF",
+	heading_2_color = "#FAA",
+	heading_3_color = "#AAF",
+	heading_4_color = "#FFA",
+	heading_5_color = "#AFF",
+	heading_6_color = "#FAF",
+	heading_1_size = "26",
+	heading_2_size = "24",
+	heading_3_size = "22",
+	heading_4_size = "20",
+	heading_5_size = "18",
+	heading_6_size = "16",
+	code_block_mono_color = "#6F6",
+	code_block_font_size = 14,
+	mono_color = "#6F6",
+	block_quote_color = "#FFA",
+}
+
 if minetest.global_exists("sfinv") then
 	sfinv.register_page("rules:rules", {
 		title = "Rules",
 		get = function(self, player, context)
 			return sfinv.make_formspec(player, context,
-				"textlist[0,0;7.85,8.5;help;" .. rules.txt .. "]", false)
+				md2f.md2ff(
+					0.2, 0.8, 8.3, 10,
+					minetest.get_modpath("rules").."/translations/rules_en.md",
+					"rules_en",
+					colors
+				),
+				false
+			)
 		end
 	})
 end
